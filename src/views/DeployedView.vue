@@ -4,77 +4,35 @@ import WelcomeItem from "../components/WelcomeItem.vue"
 </script>
 
 <script lang="ts">
+import axios from 'axios'
 import { defineComponent } from 'vue'
-
-interface GitHubAppManifest {
-  name: string,
-  url: string, 
-  hook_attributes: {
-    url: string
-  },
-  redirect_url: string,
-  public: boolean, 
-  default_permissions: {
-    contents: string, 
-    metadata: string
-  }
-  default_events: string[], 
-}
 
 export default defineComponent({
   data() {
     return {
-      orgName: '',
-      errors: new Array<string>(),
+      app_id: '',
+      webhook_secret: '',
+      pem: '', 
+      html_url: '',
+      settingsPage: ''
     }
   }, 
-  methods: {
-    random(length = 8) {
-      let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-      let str = ''
-
-      for (let i = 0; i < length; i++) {
-          str += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return str;
-    },
-    checkForm(e : Event) {
-      this.errors = []
-      if (this.orgName === '') {
-        this.errors.push('Please enter an organisation name')
-        e.preventDefault()
-      } else {
-        return true
-      }
-    }
-  }, 
-  computed: {
-    action() {
-      let randomState = this.random()
-      let action = `https://github.com/organizations/${this.orgName}/settings/apps/new?state=${randomState}`
-      return action
-    }, 
-    manifest() {  
-      let manifest = {
-        name: `OIDC Auth for GitHub on ${this.orgName}`,
-        url: 'https://github-oidc-auth-site.github.io',
-        hook_attributes: {
-          url: 'https://github-oidc-auth-site.ngrok.dev/webhook'
-        },
-        redirect_url: 'https://github-oidc-auth-site.ngrok.dev/deployed',
-        public: false, 
-        default_permissions: {
-          contents: 'read', 
-          metadata: 'read'
-        }, 
-        default_events: ['push'], 
-      } as GitHubAppManifest
-
-      return JSON.stringify(manifest)
+  mounted() {
+    let code = this.$route.query.code?.toString() || ''
+    console.log(`code is ${code}`)
+    
+    if (code !== '') {  
+      axios.post(`https://api.github.com/app-manifests/${code}/conversions`).then(({data}) => {
+        console.log(data)
+        this.app_id = data.id
+        this.webhook_secret = data.webhook_secret
+        this.pem = data.pem
+        this.html_url = data.html_url
+        this.settingsPage = `https://github.com/organizations/${data.owner.login}/settings/apps/${data.slug}`
+      })
     }
   }
 })
-
 </script>
 
 <template>
@@ -82,68 +40,23 @@ export default defineComponent({
     <template #icon>
       <SuccessIcon />
     </template>
-    <template #heading>Deploy</template>
-    <p>You need to run your own instance of this app in order to use it. This means you need to:
-    <ul>
-      <li>Create a new GitHub app using the button below</li>  
-      <li>Deploy this app somewhere</li>
-    </ul>
-    </p>
-
-    <form @submit="checkForm" :action="action" method="post">
-      <input type="hidden" name="manifest" v-model="manifest">
-      <p class="error" v-if="errors.length">
-        <b>Please correct the following error(s):</b>
-        <ul>
-          <li v-bind:key="error" v-for="error in errors">{{ error }}</li>
-        </ul>
-      </p>
-      <p>GitHub Organisation:</p>
-      <p><input type="text" v-model="orgName"></p>
-      
-      <button type="submit">
-        Create GitHub App
-      </button>
-    </form>
+    <template #heading>Success</template>
+    <p>You've succesfully deployed the OIDC Auth for GitHub app to your organisation. 
+    You can now install it onto your repositories by visiting the <a :href="html_url">app page</a> and clicking the <strong>Install</strong> button. 
+    You can also revivew the parameters on the <a :href="settingsPage">settings page</a>.</p>
+    <p>Save the parameters below and use them as environment variables for your application runtime.</p>
+    <div>
+      <ul>
+        <li><label>App ID: </label><code>{{ app_id }}</code></li>
+        <li><label>Webhook Secret: </label><code>{{ webhook_secret }}</code></li>
+        <li><label>Private Key: </label><code>{{ pem }}</code></li>
+      </ul>
+    </div>
   </WelcomeItem>
 </template>
 
 <style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
-
-form {
-  border-width: 1px;
-  border-color: #f0f1f3;
-  border-style: solid;
-  border-radius: 10px;
-  padding: 10px;
-  padding-left: 30px;
-  padding-bottom: 20px;
-}
-
 p {
   margin-bottom: 1rem;
-}
-
-form > p {
-  margin-bottom: 0rem;
-}
-
-ul {
-  margin-top: 1rem;
-}
-
-.error {
-  color: red;
-}
-
-.error ul {
-  margin-top: 0rem;
 }
 </style>
