@@ -71,11 +71,11 @@ export default defineComponent({
     manifest() {  
       let manifest = {
         name: `OIDC Auth for GitHub on ${this.orgName}`,
-        url: 'https://github-oidc-auth-site.github.io',
+        url: import.meta.env.VITE_URL,
         hook_attributes: {
           url: this.webhook
         },
-        redirect_url: 'https://github-oidc-auth-site.ngrok.dev/deployed',
+        redirect_url: import.meta.env.VITE_REDIRECT_URL,
         public: false, 
         default_permissions: {
           contents: 'read', 
