@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import DeployIcon from "../components/icons/IconDeploy.vue"
+import SuccessIcon from "../components/icons/IconSuccess.vue"
 import WelcomeItem from "../components/WelcomeItem.vue"
 </script>
 
@@ -61,7 +61,7 @@ export default defineComponent({
         hook_attributes: {
           url: 'https://github-oidc-auth-site.ngrok.dev/webhook'
         },
-        redirect_url: 'https://github-oidc-auth-site.ngrok.dev/deploy',
+        redirect_url: 'https://github-oidc-auth-site.ngrok.dev/deployed',
         public: false, 
         default_permissions: {
           contents: 'read', 
@@ -80,7 +80,7 @@ export default defineComponent({
 <template>
   <WelcomeItem>
     <template #icon>
-      <DeployIcon />
+      <SuccessIcon />
     </template>
     <template #heading>Deploy</template>
     <p>You need to run your own instance of this app in order to use it. This means you need to:
