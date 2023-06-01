@@ -25,6 +25,7 @@ export default defineComponent({
   data() {
     return {
       orgName: '',
+      webhook: '',
       errors: new Array<string>(),
     }
   }, 
@@ -39,11 +40,24 @@ export default defineComponent({
       return str;
     },
     checkForm(e : Event) {
+      let urlRegex = new RegExp('https://.*/webhook')
       this.errors = []
       if (this.orgName === '') {
         this.errors.push('Please enter an organisation name')
         e.preventDefault()
-      } else {
+      }
+      
+      if (this.webhook === '') {
+        this.errors.push('Please enter a webhook URL')
+        e.preventDefault()
+      }
+      
+      if(this.webhook !== '' && !urlRegex.test(this.webhook)) {
+        this.errors.push('Please enter a valid webhook URL (must start with https:// and end with /webhook))')
+        e.preventDefault()
+      }
+      
+      if (this.errors.length === 0) {
         return true
       }
     }
@@ -59,9 +73,9 @@ export default defineComponent({
         name: `OIDC Auth for GitHub on ${this.orgName}`,
         url: 'https://github-oidc-auth-site.github.io',
         hook_attributes: {
-          url: 'https://github-oidc-auth-site.ngrok.dev/webhook'
+          url: this.webhook
         },
-        redirect_url: 'https://github-oidc-auth-site.ngrok.dev/deploy',
+        redirect_url: 'https://github-oidc-auth-site.ngrok.dev/deployed',
         public: false, 
         default_permissions: {
           contents: 'read', 
@@ -99,7 +113,9 @@ export default defineComponent({
         </ul>
       </p>
       <p>GitHub Organisation:</p>
-      <p><input type="text" v-model="orgName"></p>
+      <p><input type="text" v-model="orgName" placeholder="octocat"></p>
+      <p>Webhook URL:</p>
+      <p><input type="text" v-model="webhook" placeholder="https://<your URL>/webhook"></p>
       
       <button type="submit">
         Create GitHub App
@@ -109,14 +125,6 @@ export default defineComponent({
 </template>
 
 <style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
-
 form {
   border-width: 1px;
   border-color: #f0f1f3;
@@ -129,6 +137,20 @@ form {
 
 p {
   margin-bottom: 1rem;
+}
+
+input {
+  width: 100%;
+  height: 2rem;
+  border-radius: 5px;
+  
+}
+
+button {
+  width: 100%;
+  height: 2rem;
+  border-radius: 5px;
+  margin-top: 1rem;
 }
 
 form > p {
