@@ -5,7 +5,10 @@ import WelcomeItem from "../components/WelcomeItem.vue"
 
 <script lang="ts">
 import axios from 'axios'
+import { Buffer } from 'buffer';
 import { defineComponent } from 'vue'
+
+const encode = (str: string):string => Buffer.from(str, 'binary').toString('base64');
 
 export default defineComponent({
   data() {
@@ -23,7 +26,6 @@ export default defineComponent({
     
     if (code !== '') {  
       axios.post(`https://api.github.com/app-manifests/${code}/conversions`).then(({data}) => {
-        console.log(data)
         this.app_id = data.id
         this.webhook_secret = data.webhook_secret
         this.pem = data.pem
@@ -49,6 +51,7 @@ export default defineComponent({
       <ul>
         <li><label>App ID: </label><code>{{ app_id }}</code></li>
         <li><label>Webhook Secret: </label><code>{{ webhook_secret }}</code></li>
+        <li><label>Private Key (Base64): </label><code>{{ encode(pem) }}</code></li>
         <li><label>Private Key: </label><code>{{ pem }}</code></li>
       </ul>
     </div>
