@@ -52,7 +52,6 @@ export default defineComponent({
         <li><label>App ID: </label><code>{{ app_id }}</code></li>
         <li><label>Webhook Secret: </label><code>{{ webhook_secret }}</code></li>
         <li><label>Private Key (Base64): </label><code>{{ encode(pem) }}</code></li>
-        <li><label>Private Key: </label><code>{{ pem }}</code></li>
       </ul>
     </div>
   </WelcomeItem>
@@ -61,5 +60,9 @@ export default defineComponent({
 <style>
 p {
   margin-bottom: 1rem;
+}
+
+li code {
+  overflow-wrap: anywhere;
 }
 </style>
