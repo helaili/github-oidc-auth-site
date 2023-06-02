@@ -14,6 +14,7 @@ import Introduction from './components/Introduction.vue'
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/try">Try</RouterLink>
         <RouterLink to="/deploy">Deploy</RouterLink>
+        <RouterLink to="/success">Success</RouterLink>
       </nav>
     </div>
   </header>
