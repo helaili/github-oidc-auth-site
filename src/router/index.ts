@@ -15,14 +15,14 @@ const router = createRouter({
       component: () => import('../views/TryView.vue')
     },
     {
+      path: '/success',
+      name: 'susccess',
+      component: () => import('../views/SuccessView.vue')
+    },
+    {
       path: '/deploy',
       name: 'deploy',
       component: () => import('../views/DeployView.vue')
-    },
-    {
-      path: '/deployed',
-      name: 'deployed',
-      component: () => import('../views/DeployedView.vue')
     }
   ]
 })
