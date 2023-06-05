@@ -5,7 +5,7 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/github-oidc-auth-site/',
+  //base: '/github-oidc-auth-site/',
   plugins: [vue()],
   resolve: {
     alias: {
