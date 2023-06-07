@@ -24,7 +24,7 @@ import WelcomeItem from "../components/WelcomeItem.vue";
     </p>
     <p>In order to use this sandbox, you will need to:
     <ul>
-      <li>Create a file named <code>oidc_entitlements.yml</code> in the <code>.github-private</code> repository of your organisation as explained <a href="https://github.com/helaili/github-oidc-auth-app/blob/main/README.md#create-a-configuration-file" target="_blank" rel="noopener">here.</a></li>
+      <li>Create a file named <code>oidc_entitlements.json</code> in the <code>.github-private</code> repository of your organisation as explained <a href="https://github.com/helaili/github-oidc-auth-app/blob/main/README.md#create-a-configuration-file" target="_blank" rel="noopener">here.</a></li>
       <li>Install the app on your organisation by clicking <a href="https://github.com/apps/oidc-auth-for-github-sandbox" target="_blank" rel="noopener">here</a>. Make sure you grant the app access to at least the <code>.github-private</code> repository and whichever other one within this organisation that you will want to access using the token.</li>
       <li>Create a workflow that uses the action <code>helaili/github-oidc-auth</code> as shown <a href="https://github.com/helaili/github-oidc-auth/blob/main/README.md#giving-it-a-try" target="_blank" rel="noopener">here</a>.</li>
     </ul>
